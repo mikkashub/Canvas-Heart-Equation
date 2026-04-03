@@ -54,11 +54,11 @@ function animate() {
 
     // 2. The Main Heart Beat
     // Pulse scale using a Sine wave
-    const pulse = 10 + Math.sin(Date.now() * 0.01) * 2;
+    const pulse = 10 + Math.sin(Date.now() * 0.002) * 2;
     
     // 3. Create Echos
     // Every few frames, add a new echo at the current pulse size
-    if (Math.random() > 0.8) {
+    if (Math.random() > 0.90) {
         hearts.push(new HeartEcho(pulse, 0.5));
     }
 

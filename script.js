@@ -5,8 +5,8 @@ let width, height;
 let hue = 0;
 let hearts = [];
 
-// Resize handler
-function resize() {
+// Resize canvas to fill the window
+function resize(){
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 }
@@ -62,16 +62,36 @@ function animate() {
         hearts.push(new HeartEcho(pulse, 0.5));
     }
 
-    // 4. Update and Draw Echos
-    hearts.forEach((h, index) => {
-        h.update();
-        h.draw();
-        if (h.opacity <= 0) hearts.splice(index, 1);
-    });
+    // 4. Draw and Update Echos
+    for (let i = hearts.length - 1; i >= 0; i--){
+        hearts[i].draw();
+        hearts[i].update();
+        
+        // Remove echoes that are fully faded
+        if (hearts[i].opacity <= 0){
+            hearts.splice(i,1);
+        }
+    }
+    // 5. Draw the Main heart
+    ctx.save();
+    ctx.translate(width / 2, height / 2);
+    ctx.scale(pulse, -pulse);
+    ctx.beginPath();
+    for (let t = 0; t <= Math.PI * 2; t += 0.01){
+        const x = 16 * Math.pow(Math.sin(t),3);
+        const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+        ctx.lineTo(x,y);
+    }
 
-    // 5. Draw the main "Solid" heart
-    const mainHeart = new HeartEcho(pulse, 1);
-    mainHeart.draw();
+    // Make the main heart pop with a solid white or bright fill
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = `hsla(${hue}, 100%, 60%, 0.8)`; // Glow effect matching the heart color
+    ctx.stroke();
+    ctx.fillStyle = `hsla(${hue}, 100%, 60%, 0.8)`; // Bright heart color
+    ctx.fill();
+    ctx.restore();
 
     requestAnimationFrame(animate);
 }
